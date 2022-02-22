@@ -34,7 +34,7 @@ export class ChallengesController {
         await this.challengesService.updateChallenge(_id, updateChallengeDto)
     }
 
-    @Post('/:challenge/match')
+    @Post('/:challenge/match/')
     async assingMatchChallenge(
         @Body(ValidationPipe) assingMatchChallengeDto: AssingMatchChallengeDto,
         @Param('challenge') _id: string): Promise<void> {
