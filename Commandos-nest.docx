@@ -1,0 +1,5 @@
+1 - nest new 'nome-do-projeto'
+2 - dentro do novo diretório - nest g module 'nome-do-novo-modulo'
+2 - dentro do novo diretório - nest g controller 'nome-do-novo-modulo'
+2 - dentro do novo diretório - '/nova pasta criada pelo module' - criar pastas para interface e dto
+2 - dentro do novo diretório - nest g service 'nome-do-novo-modulo'
