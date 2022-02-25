@@ -9,9 +9,5 @@ export const CategorySchema = new mongoose.Schema({
             operation: String,
             value: Number,
         }
-    ],
-    players: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Player'
-    }]
+    ]
 }, { timestamps: true, collection: 'categories' })

@@ -1,19 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MONGOOSE_BASEURL } from './baseUrl';
-import { CategorySchema } from './Categories/interfaces/category.schema';
-import { PlayerSchema } from './Players/interfaces/player.schema';
-
+import { CategoriesModule } from './Categories/categories.module';
+import { PlayersModule } from './Players/players.module';
 @Module({
-  imports: [MongooseModule.forRoot(MONGOOSE_BASEURL),
-  MongooseModule.forFeature([
-    { name: 'Category', schema: CategorySchema },
-    { name: 'Player', schema: PlayerSchema }
-  ])
+  imports: [MongooseModule.forRoot(MONGOOSE_BASEURL,
+    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false }),
+    CategoriesModule,
+    PlayersModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule { }

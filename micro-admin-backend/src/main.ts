@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Transport } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices'
 import { Logger } from '@nestjs/common';
 import { RABBITMQ_URL_CONNECTOR } from './baseUrl';
 
@@ -11,11 +11,15 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [RABBITMQ_URL_CONNECTOR],
-      noAck: false, //this will tell to rabbitMq to clean the queue after we send a confirmation
+      noAck: false,
       queue: 'admin-backend'
     },
   });
 
-  await app.listen(() => logger.log('Microservice is listening'));
+  await app.listen();
 }
 bootstrap();
+
+
+
+

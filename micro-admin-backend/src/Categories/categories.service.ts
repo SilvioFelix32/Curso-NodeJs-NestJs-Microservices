@@ -1,85 +1,51 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Category } from './interfaces/category.interface';
 import { Model } from 'mongoose';
-import { CreateCategoryDto } from './dtos/create-category.dto';
-import { UpdateCategoryDto } from './dtos/update-category.dto';
-import { PlayersService } from 'src/Players/players.service';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class CategoriesService {
 
     constructor(
-        @InjectModel('Category') private readonly categoryModel: Model<Category>,
-        private readonly playersService: PlayersService) { }
+        @InjectModel('Category') private readonly categoryModel: Model<Category>) { }
 
-    async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category> {
-        const { category } = createCategoryDto
-        const categoryFound = await this.categoryModel.findOne({ category }).exec()
+    private readonly logger = new Logger(CategoriesService.name)
 
-        if (categoryFound) {
-            throw new BadRequestException(`Categoria ${category} já cadastrada`)
+    async createCategory(category: Category): Promise<Category> {
+        try {
+            const categoryCreated = new this.categoryModel(category)
+            return await categoryCreated.save()
+        } catch (error) {
+            this.logger.error(`error: ${JSON.stringify(error.message)} `)
+            throw new RpcException(error.message)
         }
-
-        const createdCategory = new this.categoryModel(createCategoryDto)
-        return await createdCategory.save()
     }
 
-    async getAllCategories(): Promise<Array<Category>> {
-        return await this.categoryModel.find().populate('players').exec()
+    async getAllCategoies(): Promise<Category[]> {
+        try {
+            return await this.categoryModel.find().exec()
+        } catch (error) {
+            this.logger.error(`error: ${JSON.stringify(error.message)}`)
+            throw new RpcException(error.message)
+        }
     }
 
     async getCategoryById(category: string): Promise<Category> {
-        const categoryFound = await this.categoryModel.findOne({ category }).exec()
-
-        if (!categoryFound) {
-            throw new NotFoundException(`Categoria ${category} não encontrada`)
+        try {
+            return await this.categoryModel.findOne({ category }).exec()
+        } catch (error) {
+            throw new RpcException(error.message)
         }
-
-        return categoryFound
     }
 
-    async getPlayerCategory(playerId: any): Promise<Category> {
-        const players = await this.playersService.getAllPlayers()
+    async updateCategory(_id: string, category: Category): Promise<void> {
 
-        const playersFilter = players.filter(player => player._id == playerId)
-
-        if (playersFilter.length == 0) {
-            throw new BadRequestException(`O id ${playerId} não é um jogador!`)
+        try {
+            await this.categoryModel.findOneAndUpdate({ _id }, { $set: category }).exec()
+        } catch (error) {
+            this.logger.log(`error: ${JSON.stringify(error.message)}`)
+            throw new RpcException(error.message)
         }
-
-        return await this.categoryModel.findOne().where('players').in(playerId).exec()
-    }
-
-    async updateCategory(category: string, updateCategoryDto: UpdateCategoryDto): Promise<void> {
-        const categoryFound = await this.categoryModel.findOne({ category }).exec()
-
-        if (!categoryFound) {
-            throw new NotFoundException(`Categoria ${category} não encontrada`)
-        }
-
-        await this.categoryModel.findOneAndUpdate({ category },
-            { $set: updateCategoryDto }).exec()
-    }
-
-    async assignPlayerToCategory(params: string[]): Promise<void> {
-        const category = params['category']
-        const playerId = params['playerId']
-
-        const categoryFound = await this.categoryModel.findOne({ category }).exec()
-        const playerAlreadyRegisteredInTheCategory = await this.categoryModel.find({ category }).where('players').in(playerId).exec()
-
-        await this.playersService.getPlayerById(playerId)
-
-        if (!categoryFound) {
-            throw new BadRequestException(`Categoria ${category} não encontrada `)
-        }
-
-        if (playerAlreadyRegisteredInTheCategory.length > 0) {
-            throw new BadRequestException(`Jogador ${playerId} já cadastrado na Categoria ${category}!`)
-        }
-
-        categoryFound.players.push(playerId)
-        await this.categoryModel.findOneAndUpdate({ category }, { $set: categoryFound }).exec()
     }
 }
