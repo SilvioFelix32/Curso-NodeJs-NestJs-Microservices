@@ -11,7 +11,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [RABBITMQ_URL_CONNECTOR],
-      noAck: false,
+      noAck: false, //this will tell to rabbitMq to clean the queue after we send a confirmation
       queue: 'admin-backend'
     },
   });
