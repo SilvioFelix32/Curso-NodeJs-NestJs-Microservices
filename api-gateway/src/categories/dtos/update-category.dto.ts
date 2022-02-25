@@ -10,6 +10,7 @@ export class UpdateCategoryDto {
     @ArrayMinSize(1)
     events: Array<Event>
 }
+
 interface Event {
     name: string;
     operation: string;
