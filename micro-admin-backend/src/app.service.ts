@@ -28,7 +28,7 @@ export class AppService {
     try {
       return await this.categoryModel.find().exec()
     } catch (error) {
-      this.logger.error(`error; ${JSON.stringify(error.message)}`)
+      this.logger.error(`error: ${JSON.stringify(error.message)}`)
       throw new RpcException(error.message)
     }
   }
@@ -37,6 +37,16 @@ export class AppService {
     try {
       return await this.categoryModel.findOne({ category }).exec()
     } catch (error) {
+      throw new RpcException(error.message)
+    }
+  }
+
+  async updateCategory(_id: string, category: Category): Promise<void> {
+
+    try {
+      await this.categoryModel.findOneAndUpdate({ _id }, { $set: category }).exec()
+    } catch (error) {
+      this.logger.log(`error: ${JSON.stringify(error.message)}`)
       throw new RpcException(error.message)
     }
   }
