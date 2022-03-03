@@ -27,10 +27,10 @@ export class PlayersController {
 
         this.logger.log(`createPlayerDto: ${JSON.stringify(createPlayerDto)}`)
 
-        const categoria = this.clientAdminBackend.send('get-categories',
+        const category = this.clientAdminBackend.send('get-categories',
             createPlayerDto.category)
 
-        if (categoria) {
+        if (category) {
             this.clientAdminBackend.emit('create-player', createPlayerDto)
         } else {
             throw new BadRequestException(`Categoria não cadastrada!`)
@@ -65,9 +65,9 @@ export class PlayersController {
 
 
     @Get()
-    consultarJogadores(@Query('idJogador') _id: string): Observable<any> {
+    consultarJogadores(@Query('playerId') _id: string): Observable<any> {
 
-        return this.clientAdminBackend.send('consultar-jogadores', _id ? _id : '')
+        return this.clientAdminBackend.send('get-players', _id ? _id : '')
 
     }
 
