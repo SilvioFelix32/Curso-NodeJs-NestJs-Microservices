@@ -16,8 +16,8 @@ import { MailerModule } from '@nestjs-modules/mailer'
           ciphers: 'SSLv3'
         },
         auth: {
-          user: 'AKIA4KCP6CKKMS2EP4NU',
-          pass: 'BBMCxEYxkR5nbvAsC++XNSrWBMtIp9YOQ0WAoBTrlE9+'
+          user: '',
+          pass: ''
         }
       }
     }),
