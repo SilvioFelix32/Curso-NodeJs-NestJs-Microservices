@@ -13,4 +13,4 @@ export const ChallengeSchema = new moongose.Schema({
     match: {
         type: moongose.Schema.Types.ObjectId, ref: 'Match'
     }
-}, { timestamps: true, collection: 'desafios' })
+}, { timestamps: true, collection: 'challenges' })
